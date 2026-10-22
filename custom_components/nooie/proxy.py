@@ -13,6 +13,7 @@ reader joins the stream that is already running.
 
 import asyncio
 import contextlib
+import hashlib
 import logging
 import os
 import sys
@@ -155,8 +156,10 @@ async def _spawn(
             "XDG_CONFIG_HOME": home,
             # One session for every install: a sign-in ends every other
             # session on the account, so installs that each signed in would
-            # evict one another, and the phone app with them.
-            "NOOIE_SESSIONS": hass.config.path(DOMAIN, "sessions.json"),
+            # evict one another, and the phone app with them. One file per
+            # account, though: a session left by another account would
+            # otherwise answer for this one and stand in for its sign-in.
+            "NOOIE_SESSIONS": hass.config.path(DOMAIN, _sessions(data)),
             "PYTHONWARNINGS": QUIET,
             "NOOIE_USERNAME": str(data[CONF_USERNAME]),
             "NOOIE_PASSWORD": str(data[CONF_PASSWORD]),
@@ -164,6 +167,12 @@ async def _spawn(
             "NOOIE_DEVICE_ID": device_id,
         },
     )
+
+
+def _sessions(data: dict[str, Any]) -> str:
+    """The name of the session file that belongs to this account."""
+    account = str(data[CONF_USERNAME]).strip().lower().encode()
+    return f"sessions-{hashlib.sha256(account).hexdigest()[:12]}.json"
 
 
 async def _log(stderr: asyncio.StreamReader) -> str:
