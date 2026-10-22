@@ -52,12 +52,12 @@ MAX_RETRY = 600
 # them, and the proxy needs a newer one than the pin. Giving it an environment
 # of its own settles that at this release and at every later one, and costs
 # far less disk than the container this integration replaced.
-VERSION = "0.3.1.post1"
+VERSION = "0.3.1.post2"
 # Debug build: the engine from the D33pnight fork, which logs the signalling
 # frames of the call handshake (see D33pnight/nooie-proxy).
 PACKAGE = (
     "nooie-proxy @ https://github.com/D33pnight/nooie-proxy/archive/"
-    "85a06e98a88561c387368b3859b2f7edbaa5585b.zip"
+    "e187b4646a17a3ff6c09e8c61ac74ce300e1f5a3.zip"
 )
 BUILD_TIMEOUT = 900
 # aiortc reads crc32c only for SCTP, which a receive-only call never opens.
